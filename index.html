@@ -1,0 +1,133 @@
+<!DOCTYPE html><html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Format Converter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #2E4756;
+        }
+        .container {
+            background: #3C5B6F;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            width: 90%;
+            max-width: 380px;
+            box-shadow: 0px 5px 15px rgba(0,0,0,0.2);
+        }
+        h2 { color: white; margin-bottom: 18px; }
+        .upload-box {
+            background: #4A6A80;
+            padding: 18px;
+            border-radius: 10px;
+            margin-bottom: 18px;
+        }
+        .upload-btn {
+            margin-top: 20px ;
+            display: inline-block;
+            background: #6EA4BF;
+            padding: 12px 18px;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #file-name {
+            margin-top: 10px;
+            color: white;
+        }
+        select, .convert-btn {
+            width: 100%;
+            padding: 12px;
+            margin-top: 12px;
+            border-radius: 5px;
+        }
+        .convert-btn {
+            background: #6EA4BF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        #downloadBtn {
+            display: none;
+            margin-top: 12px;
+            padding: 12px;
+            background: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body><div class="container">
+    <h2>Image Format Converter</h2>
+    
+    <div class="upload-box">
+        <p>Files Supported: JPEG, PNG, WebP, BMP, GIF, SVG, TIFF, ICO</p>
+        <label for="upload" class="upload-btn">Choose File</label>
+        <input type="file" id="upload" accept="image/*" hidden>
+        <p id="file-name">No file chosen</p>
+    </div>
+
+    <select id="format">
+        <option value="jpeg">JPEG</option>
+        <option value="png">PNG</option>
+        <option value="webp">WebP</option>
+        <option value="bmp">BMP</option>
+        <option value="gif">GIF</option>
+        <option value="svg">SVG</option>
+        <option value="tiff">TIFF</option>
+        <option value="ico">ICO</option>
+    </select>
+
+    <button onclick="convertImage()" class="convert-btn">Convert</button>
+    <a id="downloadBtn" download="converted_image">Download Image</a>
+</div>
+
+<script>
+    let image = new Image();
+
+    document.getElementById('upload').addEventListener('change', function(event) {
+        let file = event.target.files[0];
+        if (file) {
+            document.getElementById('file-name').textContent = file.name;
+        } else {
+            document.getElementById('file-name').textContent = "No file chosen";
+        }
+        let reader = new FileReader();
+        reader.onload = function(e) {
+            image.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+
+    function convertImage() {
+        let format = document.getElementById("format").value;
+        let canvas = document.createElement("canvas");
+        let ctx = canvas.getContext("2d");
+
+        canvas.width = image.width;
+        canvas.height = image.height;
+        ctx.drawImage(image, 0, 0);
+
+        let convertedImage = canvas.toDataURL("image/" + format);
+
+        let link = document.getElementById('downloadBtn');
+        link.href = convertedImage;
+        link.download = "converted_image." + format;
+        link.style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
